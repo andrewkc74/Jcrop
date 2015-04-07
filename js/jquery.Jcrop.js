@@ -54,9 +54,41 @@
       return [pos.left, pos.top];
     }
     //}}}
+    function rotate()
+    {
+      $('.jcrop-holder').removeClass('rotate' + options.rotate)
+      options.rotate = options.rotate + 90;
+      if(options.rotate == 360){
+        options.rotate = 0;
+      }
+      $('.jcrop-holder').addClass('rotate' + options.rotate);
+    }
     function mouseAbs(e) //{{{
     {
-      return [(e.pageX - docOffset[0]), (e.pageY - docOffset[1])];
+      //return [(e.pageX - docOffset[0]), (e.pageY - docOffset[1])];
+      switch (options.rotate) {
+          case 90:
+            return [(e.pageY - docOffset[1]), -(e.pageX - docOffset[0] - options.imgHeight)];
+            break;
+          case -270:
+            return [(e.pageY - docOffset[1]), -(e.pageX - docOffset[0] - options.imgHeight)];
+            break;
+          case -90:
+            return [-(e.pageY - docOffset[1] - options.imgWidth), (e.pageX - docOffset[0] )];
+            break;
+          case 270:
+            return [-(e.pageY - docOffset[1] - options.imgWidth), (e.pageX - docOffset[0] )];
+            break;
+          case 180:
+            return [-(e.pageX - docOffset[0]- options.imgWidth), -(e.pageY - docOffset[1] - options.imgHeight)];
+            break;
+          case -180:
+            return [-(e.pageX - docOffset[0]- options.imgWidth), -(e.pageY - docOffset[1] - options.imgHeight)];
+            break;
+          default:
+            return [(e.pageX - docOffset[0]), (e.pageY - docOffset[1])];
+            break;
+      }
     }
     //}}}
     function setOptions(opt) //{{{
@@ -209,7 +241,8 @@
         x2: c.x2 * xscale,
         y2: c.y2 * yscale,
         w: c.w * xscale,
-        h: c.h * yscale
+        h: c.h * yscale,
+        r: options.rotate
       };
     }
     //}}}
@@ -1403,6 +1436,10 @@
       interfaceUpdate();
     }
     //}}}
+    function rotateImage() 
+    {
+      rotate();
+    }
     function disableCrop() //{{{
     {
       options.disabled = true;
@@ -1547,6 +1584,7 @@
       tellSelect: tellSelect,
       tellScaled: tellScaled,
       setClass: setClass,
+      rotate: rotateImage,
 
       disable: disableCrop,
       enable: enableCrop,
@@ -1659,6 +1697,7 @@
     borderOpacity: 0.4,
     handleOpacity: 0.5,
     handleSize: null,
+    rotate: 0,
 
     aspectRatio: 0,
     keySupport: true,
